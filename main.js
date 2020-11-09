@@ -28,11 +28,12 @@ function renderHomePage() {
     if (bookmark.rating >= items.filter) {
       bookmarkDetails += `
             <div>
-                <h2 class="bookmarkTitle">${bookmark.title}</h2>
+                <h2 class="bookmarkTitle">${bookmark.title} ${bookmark.rating} Stars</h2>
                 <div class="flex-container hidden">
-                    <div>${bookmark.rating}</div>
-                    <div>${bookmark.url}</div>
+                    <div>${bookmark.rating} Stars</div>
+                    <div><${bookmark.url}</div>
                     <div>${bookmark.desc}</div>
+                    <div><a href="${bookmark.url}">Visit Site</a></div>
                     <span>
                         <button class="delete" bookmark-id="${bookmark.id}">Delete</input>
                     </span>
@@ -65,7 +66,6 @@ function deleteBookmarkListener() {
 }
 
 function handleDetails() {
-  console.log("goodjob");
   $("body").on("click", ".bookmarkTitle", function (e) {
     $(this).next().toggleClass("hidden");
   });
