@@ -1,0 +1,3 @@
+let bookmarks = [];
+
+export {bookmarks} 
