@@ -6,4 +6,4 @@ const items = {
   currentRating: { rating: 0, selected: 0 },
 };
 
-export default items;
+export { items };

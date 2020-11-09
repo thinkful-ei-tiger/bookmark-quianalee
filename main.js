@@ -1,14 +1,32 @@
 import { createBookmark, getBookmarks, deleteBookmark } from "./api.js";
 import { items } from "./store.js";
 
-let bookmarks = [];
-
 function renderHomePage() {
-  getBookmarks()
-    .then((response) => response.json())
-    .then((data) => {
-      data.map((bookmark) => {
-        const bookmarkDetails = `
+  let bookmarkDetails = `
+  <h1>Bookmark App</h1>
+  <div class="addbtn">
+      <button type="button">Add Bookmark</button>
+  </div>
+  <div class="dropdown">
+      <button class="flex-container id="dropbtn">Filter By</button>
+        <div class="dropdown-content">
+            <div class='filterInput'>
+                <label>Filter By</label>
+                <input class='filter' type='radio' name='rating' value='1'/>
+                <input class='filter' type='radio' name='rating' value='2'/>
+                <input class='filter' type='radio' name='rating' value='3'/>
+                <input class='filter' type='radio' name='rating' value='4'/>
+                <input class='filter' type='radio' name='rating' value='5'/>
+            </div>
+        </div>   
+  </div>
+  
+`;
+
+  for (let bookmark of items.bookmarks) {
+    console.log("quiana");
+    if (bookmark.rating >= items.filter) {
+      bookmarkDetails += `
             <div>
                 <h2 class="bookmarkTitle">${bookmark.title}</h2>
                 <div class="flex-container hidden">
@@ -21,34 +39,11 @@ function renderHomePage() {
                 </div>
             </div>
             `;
-        $("body").append(bookmarkDetails);
-      });
-      $("h2.bookmarkTitle").on("click", function (e) {
-        $(this).next().toggleClass("hidden");
-      });
-    });
+    }
+  }
 
-  const html = `
-        <h1>Bookmark App</h1>
-        <div class="addbtn">
-            <button type="button">Add Bookmark</button>
-        </div>
-        <div class="dropdown">
-            <button class="flex-container id="dropbtn">Filter By</button>
-            <div class="dropdown-content">
-                <a href="1star">1 star</a>
-                <a href="2star">2 star</a>
-                <a href="3star">3 star</a>
-                <a href="4star">4 star</a>
-                <a href="5star">5 star</a>
-            </div>   
-        </div>
-        
-    `;
-
-  $("body").html(html);
+  $("body").html(bookmarkDetails);
 }
-
 function addBookmarkListener() {
   $("body").on("click", ".addbtn", function () {
     renderForm();
@@ -60,12 +55,19 @@ function deleteBookmarkListener() {
     const id = $(this).attr(`bookmark-id`);
     deleteBookmark(id).then((response) => {
       if (response.ok) {
-        bookmarks = bookmarks.filter((bookmark) => {
+        items.bookmarks = items.bookmarks.filter((bookmark) => {
           return bookmark.id !== id;
         });
         renderHomePage();
       }
     });
+  });
+}
+
+function handleDetails() {
+  console.log("goodjob");
+  $("body").on("click", ".bookmarkTitle", function (e) {
+    $(this).next().toggleClass("hidden");
   });
 }
 
@@ -85,11 +87,11 @@ function renderForm() {
         <br>
             <div class='radio'>
                 <label>Select Your Rating</label>
-                <input id="1" type='radio' name='rating' value='1'/>
-                <input id="2" type='radio' name='rating' value='2'/>
-                <input id="3" type='radio' name='rating' value='3'/>
-                <input id="4" type='radio' name='rating' value='4'/>
-                <input id="5" type='radio' name='rating' value='5'/>
+                <input class='radioInput' type='radio' name='rating' value='1'/>
+                <input class='radioInput' type='radio' name='rating' value='2'/>
+                <input class='radioInput' type='radio' name='rating' value='3'/>
+                <input class='radioInput' type='radio' name='rating' value='4'/>
+                <input class='radioInput' type='radio' name='rating' value='5'/>
             </div>
         <br>
             <div class='descrip'>
@@ -111,7 +113,10 @@ function renderForm() {
 }
 
 function filterListener1() {
-  $(".radio").not("#2", "#3", "#4", "#5", function () {});
+  $("body").on("click", ".filter", function (e) {
+    items.filter = $(e.target).val();
+    renderHomePage();
+  });
 }
 
 function submitFormListener() {
@@ -124,20 +129,36 @@ function submitFormListener() {
     if (title === "" || url === "") {
       $("#formErrorMessage").removeClass("hidden");
     } else {
-      createBookmark(title, url, rating, description).then((response) => {
-        if (response.ok) {
+      createBookmark(title, url, rating, description)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          items.bookmarks.push(data);
           renderHomePage();
-        }
-      });
+        });
     }
   });
 }
 
+function initialize() {
+  getBookmarks()
+    .then((res) => res.json())
+    .then((data) => {
+      data.forEach((current) => {
+        items.bookmarks.push(current);
+      });
+      renderHomePage();
+    });
+}
+
+$(initialize);
 $(renderHomePage);
 $(addBookmarkListener);
 $(submitFormListener);
 $(deleteBookmarkListener);
 $(filterListener1);
+$(handleDetails);
 
 //Mike Stowe TA
 
