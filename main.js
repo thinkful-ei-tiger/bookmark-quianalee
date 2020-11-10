@@ -1,5 +1,6 @@
 import { createBookmark, getBookmarks, deleteBookmark } from "./api.js";
 import { items } from "./store.js";
+import { urlIssue } from "./state.js";
 
 function renderHomePage() {
   let bookmarkDetails = `
@@ -7,24 +8,25 @@ function renderHomePage() {
   <div class="addbtn">
       <button type="button">Add Bookmark</button>
   </div>
-  <div class="dropdown">
-      <button class="flex-container id="dropbtn">Filter By</button>
-        <div class="dropdown-content">
-            <div class='filterInput'>
-                <label>Filter By</label>
-                <input class='filter' type='radio' name='rating' value='1'/>
-                <input class='filter' type='radio' name='rating' value='2'/>
-                <input class='filter' type='radio' name='rating' value='3'/>
-                <input class='filter' type='radio' name='rating' value='4'/>
-                <input class='filter' type='radio' name='rating' value='5'/>
-            </div>
-        </div>   
-  </div>
+  <form>
+    <div class="dropdown">
+        <button class="flex-container id="dropbtn">Filter By</button>
+            <div class="dropdown-content">
+                <div class='filterInput'>
+                    <label>Filter By</label>
+                    <input class='filter' type='radio' name='rating' value='1'/>
+                    <input class='filter' type='radio' name='rating' value='2'/>
+                    <input class='filter' type='radio' name='rating' value='3'/>
+                    <input class='filter' type='radio' name='rating' value='4'/>
+                    <input class='filter' type='radio' name='rating' value='5'/>
+                </div>
+            </div>   
+    </div>
+    </form>
   
 `;
 
   for (let bookmark of items.bookmarks) {
-    console.log("quiana");
     if (bookmark.rating >= items.filter) {
       bookmarkDetails += `
             <div>
@@ -33,7 +35,7 @@ function renderHomePage() {
                     <div>${bookmark.rating} Stars</div>
                     <div><${bookmark.url}</div>
                     <div>${bookmark.desc}</div>
-                    <div><a href="${bookmark.url}">Visit Site</a></div>
+                    <div><a target="_blank" href="${bookmark.url}">Visit Site</a></div>
                     <span>
                         <button class="delete" bookmark-id="${bookmark.id}">Delete</input>
                     </span>
@@ -43,16 +45,16 @@ function renderHomePage() {
     }
   }
 
-  $("body").html(bookmarkDetails);
+  $("main").html(bookmarkDetails);
 }
 function addBookmarkListener() {
-  $("body").on("click", ".addbtn", function () {
+  $("main").on("click", ".addbtn", function () {
     renderForm();
   });
 }
 
 function deleteBookmarkListener() {
-  $("body").on("click", ".delete", function (e) {
+  $("main").on("click", ".delete", function (e) {
     const id = $(this).attr(`bookmark-id`);
     deleteBookmark(id).then((response) => {
       if (response.ok) {
@@ -66,7 +68,7 @@ function deleteBookmarkListener() {
 }
 
 function handleDetails() {
-  $("body").on("click", ".bookmarkTitle", function (e) {
+  $("main").on("click", ".bookmarkTitle", function (e) {
     $(this).next().toggleClass("hidden");
   });
 }
@@ -75,58 +77,68 @@ function renderForm() {
   const html = `
         <h1>Bookmark App</h1>
         <form>
-            <div class='title'>
-                <label>Bookmark Title</label>
+            <section class="title">
+                <label for"title">Bookmark Title</label>
                 <input type='text' name='title' id='title'/>
-            </div>  
+            </section>
 
             <div class='url'>
-                <label> Enter URL Here</label>
+                <label for"url"> Enter URL Here</label>
                 <input type='text' name='url' id='url'/>
             </div>   
-        <br>
+        
             <div class='radio'>
-                <label>Select Your Rating</label>
+            <label>Select Your Rating</label>
                 <input class='radioInput' type='radio' name='rating' value='1'/>
                 <input class='radioInput' type='radio' name='rating' value='2'/>
                 <input class='radioInput' type='radio' name='rating' value='3'/>
                 <input class='radioInput' type='radio' name='rating' value='4'/>
                 <input class='radioInput' type='radio' name='rating' value='5'/>
             </div>
-        <br>
+        
             <div class='descrip'>
-                <label>Leave a Description</label>
+                <label for="description">Leave a Description</label>
                 <input type='text' name='description' id='description'/>
             </div>
-        <br>
+        
             <div class='submit'>
                 <button type="submit">Submit</button>
             </div>
             <div class='hidden' id='formErrorMessage'>
                 <p>
-                    Please fill in both Title and URL spaces.
+                    Please fill in Title.
                 </p>
             </div>
+            <div class='hidden' id='urlErrorMessage'>
+            <p>
+                Please use http:// or https://
+            </p>
+            
+        </div>
         </form>
     `;
-  $("body").html(html);
+  $("main").html(html);
 }
 
 function filterListener1() {
-  $("body").on("click", ".filter", function (e) {
+  $("main").on("click", ".filter", function (e) {
     items.filter = $(e.target).val();
     renderHomePage();
   });
 }
 
 function submitFormListener() {
-  $("body").on("submit", "form", function (event) {
+  $("main").on("submit", "form", function (event) {
     event.preventDefault();
+    $("#urlErrorMessage").addClass("hidden");
+    $("#formErrorMessage").addClass("hidden");
     let title = $("#title").val();
     let url = $("#url").val();
     let rating = $("[name=rating]:checked").val();
     let description = $("#description").val();
-    if (title === "" || url === "") {
+    if (urlCheck(url)) {
+      $("#urlErrorMessage").removeClass("hidden");
+    } else if (title === "") {
       $("#formErrorMessage").removeClass("hidden");
     } else {
       createBookmark(title, url, rating, description)
@@ -139,6 +151,13 @@ function submitFormListener() {
         });
     }
   });
+}
+
+function urlCheck(url) {
+  if (!url.match(/^https?:\/\//)) {
+    return true;
+  }
+  return false;
 }
 
 function initialize() {
