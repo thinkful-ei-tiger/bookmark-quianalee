@@ -10,15 +10,17 @@ function renderHomePage() {
   </div>
   <form>
     <div class="dropdown">
-        <button class="flex-container id="dropbtn">Filter By</button>
-            <div class="dropdown-content">
+        <button type="button" class="flex-container" id="dropbtn">Filter By</button>
+            <div class="dropdown-content hidden" id="filter">
                 <div class='filterInput'>
                     <label>Filter By</label>
-                    <input class='filter' type='radio' name='rating' value='1'/>
-                    <input class='filter' type='radio' name='rating' value='2'/>
-                    <input class='filter' type='radio' name='rating' value='3'/>
-                    <input class='filter' type='radio' name='rating' value='4'/>
-                    <input class='filter' type='radio' name='rating' value='5'/>
+                    <select type="dropdown" id="filter-dropdown">
+                        <option value="1">1 Star</option>
+                        <option value="2">2 Star</option>
+                        <option value="3">3 Star</option>
+                        <option value="4">4 Star</option>
+                        <option value="5">5 Star</option>
+                    </select>
                 </div>
             </div>   
     </div>
@@ -46,6 +48,7 @@ function renderHomePage() {
   }
 
   $("main").html(bookmarkDetails);
+  $(`option[value="${items.filter}"]`).attr("selected", true);
 }
 function addBookmarkListener() {
   $("main").on("click", ".addbtn", function () {
@@ -78,17 +81,17 @@ function renderForm() {
         <h1>Bookmark App</h1>
         <form>
             <section class="title">
-                <label for"title">Bookmark Title</label>
+                <label for="title">Bookmark Title</label>
                 <input type='text' name='title' id='title'/>
             </section>
 
-            <div class='url'>
-                <label for"url"> Enter URL Here</label>
+            <section class='url'>
+                <label for="url"> Enter URL Here</label>
                 <input type='text' name='url' id='url'/>
-            </div>   
+            </section>   
         
             <div class='radio'>
-            <label>Select Your Rating</label>
+            <label for="rating">Select Your Rating</label>
                 <input class='radioInput' type='radio' name='rating' value='1'/>
                 <input class='radioInput' type='radio' name='rating' value='2'/>
                 <input class='radioInput' type='radio' name='rating' value='3'/>
@@ -96,36 +99,51 @@ function renderForm() {
                 <input class='radioInput' type='radio' name='rating' value='5'/>
             </div>
         
-            <div class='descrip'>
+            <section class='descrip'>
                 <label for="description">Leave a Description</label>
                 <input type='text' name='description' id='description'/>
-            </div>
+            </section>
         
-            <div class='submit'>
+            <section class='submit'>
                 <button type="submit">Submit</button>
-            </div>
-            <div class='hidden' id='formErrorMessage'>
+            </section>
+            <section class='hidden' id='formErrorMessage'>
                 <p>
                     Please fill in Title.
                 </p>
-            </div>
-            <div class='hidden' id='urlErrorMessage'>
+            </section>
+            <section class='hidden' id='urlErrorMessage'>
             <p>
                 Please use http:// or https://
             </p>
-            
+            </section>
         </div>
         </form>
     `;
   $("main").html(html);
 }
 
-function filterListener1() {
-  $("main").on("click", ".filter", function (e) {
+function handleFilterDropdown() {
+  $("main").on("change", "#filter-dropdown", function (e) {
+    console.log($(e.target).val());
     items.filter = $(e.target).val();
     renderHomePage();
   });
 }
+
+function handleFilterButton() {
+  $("main").on("click", "#dropbtn", function (e) {
+    console.log("filter");
+    $("#filter").removeClass("hidden");
+  });
+}
+
+// function filterListener2() {
+//   $("main").on("keypress", ".flex-container hidden", function (e) {
+//     console.log(this);
+//     $(this).removeClass("hidden");
+//   });
+// }
 
 function submitFormListener() {
   $("main").on("submit", "form", function (event) {
@@ -133,7 +151,7 @@ function submitFormListener() {
     $("#urlErrorMessage").addClass("hidden");
     $("#formErrorMessage").addClass("hidden");
     let title = $("#title").val();
-    let url = $("#url").val();
+    let url = $("#url").val() || "";
     let rating = $("[name=rating]:checked").val();
     let description = $("#description").val();
     if (urlCheck(url)) {
@@ -154,10 +172,11 @@ function submitFormListener() {
 }
 
 function urlCheck(url) {
-  if (!url.match(/^https?:\/\//)) {
+  if (!url.includes("https://") && !url.includes("http://")) {
     return true;
+  } else {
+    return false;
   }
-  return false;
 }
 
 function initialize() {
@@ -176,7 +195,8 @@ $(renderHomePage);
 $(addBookmarkListener);
 $(submitFormListener);
 $(deleteBookmarkListener);
-$(filterListener1);
+$(handleFilterDropdown);
+$(handleFilterButton);
 $(handleDetails);
 
 //Mike Stowe TA
