@@ -15,11 +15,11 @@ function renderHomePage() {
                 <div class='filterInput'>
                     <label>Filter By</label>
                     <select type="dropdown" id="filter-dropdown">
-                        <option value="1">1 Star</option>
-                        <option value="2">2 Star</option>
-                        <option value="3">3 Star</option>
-                        <option value="4">4 Star</option>
-                        <option value="5">5 Star</option>
+                        <option label="1star" value="1">1 Star</option>
+                        <option label="2star" value="2">2 Star</option>
+                        <option label="3star" value="3">3 Star</option>
+                        <option label="4star" value="4">4 Star</option>
+                        <option label="5star" value="5">5 Star</option>
                     </select>
                 </div>
             </div>   
@@ -32,7 +32,7 @@ function renderHomePage() {
     if (bookmark.rating >= items.filter) {
       bookmarkDetails += `
             <div>
-                <h2 tabindex="0" class="bookmarkTitle">${bookmark.title} ${bookmark.rating} Stars</h2>
+                <h2 label="title" tabindex="0" class="bookmarkTitle">${bookmark.title} ${bookmark.rating} Stars</h2>
                 <section class="details hidden" id="details">
                   <span class="flex-container" id="flex-container">
                     <h4 tabindex="0">${bookmark.rating} Stars</h4>
