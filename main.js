@@ -72,11 +72,11 @@ function renderForm() {
         
             <div class='radio'>
             <label for="rating">Select Your Rating</label>
-                <input class='radioInput' type='radio' name='rating' value='1'/>
-                <input class='radioInput' type='radio' name='rating' value='2'/>
-                <input class='radioInput' type='radio' name='rating' value='3'/>
-                <input class='radioInput' type='radio' name='rating' value='4'/>
-                <input class='radioInput' type='radio' name='rating' value='5'/>
+                <input label="1star" class='radioInput' type='radio' name='rating' value='1'/>
+                <input label="2star" class='radioInput' type='radio' name='rating' value='2'/>
+                <input label="3star" class='radioInput' type='radio' name='rating' value='3'/>
+                <input label="4star" class='radioInput' type='radio' name='rating' value='4'/>
+                <input label="5star" class='radioInput' type='radio' name='rating' value='5'/>
             </div>
         
             <section class='descrip'>
