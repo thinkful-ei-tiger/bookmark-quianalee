@@ -33,23 +33,21 @@ function renderHomePage() {
       bookmarkDetails += `
             <div>
                 <h2 tabindex="0" class="bookmarkTitle">${bookmark.title} ${bookmark.rating} Stars</h2>
-                <section id="details" class="ml-info hidden">
-                  <div class="flex-container" id="flex-container">
-                    <div tabindex="0">${bookmark.rating} Stars</div>
-                    <div tabindex="0"><${bookmark.url}</div>
+                <section class="details hidden" id="details">
+                  <span class="flex-container" id="flex-container">
+                    <h4 tabindex="0">${bookmark.rating} Stars</h4>
+                    <p tabindex="0"><${bookmark.url}</p>
                     <div tabindex="0">${bookmark.desc}</div>
-                    <div><a target="_blank" href="${bookmark.url}">Visit Site</a>
-                  </div>
+                    <a target="_blank" href="${bookmark.url}">Visit Site</a>
+                  </span>
                 </section>
                     <span>
-                        <button type="button" class="more-info" bookmark-id="${bookmark.id}">More/Less Details</button>
+                        <button tabindex="0" type="button" id="moreInfo">More/Less Details</button>
                     </span>
                     <span>
-                        <button type="button" class="delete" bookmark-id="${bookmark.id}">Delete</button>
+                        <button tabindex="0" type="button" class="delete" bookmark-id="${bookmark.id}">Delete</button>
                     </span>
-                    
-                </div>
-            </div>
+              </div>
             `;
     }
   }
@@ -126,9 +124,9 @@ function deleteBookmarkListener() {
 }
 
 function handleDetails() {
-  $("main").on("click", ".more-info", function (e) {
+  $("main").on("click", "#moreInfo", function (e) {
     e.preventDefault();
-    $("#details").toggleClass("hidden");
+    $(".details").toggleClass("hidden");
   });
 }
 
