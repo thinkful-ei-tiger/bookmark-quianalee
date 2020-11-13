@@ -32,15 +32,22 @@ function renderHomePage() {
     if (bookmark.rating >= items.filter) {
       bookmarkDetails += `
             <div>
-                <h2 class="bookmarkTitle">${bookmark.title} ${bookmark.rating} Stars</h2>
-                <div class="flex-container hidden">
-                    <div>${bookmark.rating} Stars</div>
-                    <div><${bookmark.url}</div>
-                    <div>${bookmark.desc}</div>
-                    <div><a target="_blank" href="${bookmark.url}">Visit Site</a></div>
+                <h2 tabindex="0" class="bookmarkTitle">${bookmark.title} ${bookmark.rating} Stars</h2>
+                <section id="details" class="ml-info hidden">
+                  <div class="flex-container" id="flex-container">
+                    <div tabindex="0">${bookmark.rating} Stars</div>
+                    <div tabindex="0"><${bookmark.url}</div>
+                    <div tabindex="0">${bookmark.desc}</div>
+                    <div><a target="_blank" href="${bookmark.url}">Visit Site</a>
+                  </div>
+                </section>
                     <span>
-                        <button class="delete" bookmark-id="${bookmark.id}">Delete</input>
+                        <button type="button" class="more-info" bookmark-id="${bookmark.id}">More/Less Details</button>
                     </span>
+                    <span>
+                        <button type="button" class="delete" bookmark-id="${bookmark.id}">Delete</button>
+                    </span>
+                    
                 </div>
             </div>
             `;
@@ -49,31 +56,6 @@ function renderHomePage() {
 
   $("main").html(bookmarkDetails);
   $(`option[value="${items.filter}"]`).attr("selected", true);
-}
-function addBookmarkListener() {
-  $("main").on("click", ".addbtn", function () {
-    renderForm();
-  });
-}
-
-function deleteBookmarkListener() {
-  $("main").on("click", ".delete", function (e) {
-    const id = $(this).attr(`bookmark-id`);
-    deleteBookmark(id).then((response) => {
-      if (response.ok) {
-        items.bookmarks = items.bookmarks.filter((bookmark) => {
-          return bookmark.id !== id;
-        });
-        renderHomePage();
-      }
-    });
-  });
-}
-
-function handleDetails() {
-  $("main").on("click", ".bookmarkTitle", function (e) {
-    $(this).next().toggleClass("hidden");
-  });
 }
 
 function renderForm() {
@@ -123,6 +105,33 @@ function renderForm() {
   $("main").html(html);
 }
 
+function addBookmarkListener() {
+  $("main").on("click", ".addbtn", function () {
+    renderForm();
+  });
+}
+
+function deleteBookmarkListener() {
+  $("main").on("click", ".delete", function (e) {
+    const id = $(this).attr(`bookmark-id`);
+    deleteBookmark(id).then((response) => {
+      if (response.ok) {
+        items.bookmarks = items.bookmarks.filter((bookmark) => {
+          return bookmark.id !== id;
+        });
+        renderHomePage();
+      }
+    });
+  });
+}
+
+function handleDetails() {
+  $("main").on("click", ".more-info", function (e) {
+    e.preventDefault();
+    $("#details").toggleClass("hidden");
+  });
+}
+
 function handleFilterDropdown() {
   $("main").on("change", "#filter-dropdown", function (e) {
     console.log($(e.target).val());
@@ -137,13 +146,6 @@ function handleFilterButton() {
     $("#filter").removeClass("hidden");
   });
 }
-
-// function filterListener2() {
-//   $("main").on("keypress", ".flex-container hidden", function (e) {
-//     console.log(this);
-//     $(this).removeClass("hidden");
-//   });
-// }
 
 function submitFormListener() {
   $("main").on("submit", "form", function (event) {
@@ -198,15 +200,3 @@ $(deleteBookmarkListener);
 $(handleFilterDropdown);
 $(handleFilterButton);
 $(handleDetails);
-
-//Mike Stowe TA
-
-/*After I render my form and fill it out, I want to store the information in the store
-I need an event listener the the submit button
-After I store it, I want to go back to my home page and have my saved bookmark showing
-From the home page, I want to be able to click the bookmark to see the description, have a link to the page, and have an option to edit
-I need to make the displayed bookmark a dropdown and set up event listeners for the delete and edit buttons
-I want to throw an error if the form is not completely filled out, the whole form must be filled out
-I need to be able to delete bookmarks in the same place it's offered to edit them
-I have to export all my js files to my main js file
-I need my main js file to import all of my other js files */

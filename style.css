@@ -1,3 +1,7 @@
+body {
+  background-color: aquamarine;
+}
+
 /* Dropdown Button */
 .flex-container #dropbtn {
   display: flex;
