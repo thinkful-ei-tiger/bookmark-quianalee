@@ -24,7 +24,7 @@ function renderHomePage() {
                 </div>
             </div>   
     </div>
-    </form>
+  </form>
   
 `;
 
@@ -33,20 +33,19 @@ function renderHomePage() {
       bookmarkDetails += `
             <div>
                 <h2 label="title" tabindex="0" class="bookmarkTitle">${bookmark.title} ${bookmark.rating} Stars</h2>
-                <section class="details hidden" id="details">
-                  <span class="flex-container" id="flex-container">
+                <section class="details hidden">
+                  <span class="flex-container">
                     <h4 tabindex="0">${bookmark.rating} Stars</h4>
                     <p tabindex="0"><${bookmark.url}</p>
                     <div tabindex="0">${bookmark.desc}</div>
                     <a target="_blank" href="${bookmark.url}">Visit Site</a>
                   </span>
                 </section>
-                    <span>
-                        <button tabindex="0" type="button" id="moreInfo">More/Less Details</button>
-                    </span>
-                    <span>
+                    
+                        <button tabindex="0" type="button" class="moreInfo">More/Less Details</button>
+                   
                         <button tabindex="0" type="button" class="delete" bookmark-id="${bookmark.id}">Delete</button>
-                    </span>
+                  
               </div>
             `;
     }
@@ -70,14 +69,23 @@ function renderForm() {
                 <input type='text' name='url' id='url'/>
             </section>   
         
-            <div class='radio'>
+            <form "type='radio'>
             <label for="rating">Select Your Rating</label>
-                <input label="1star" class='radioInput' type='radio' name='rating' value='1'/>
-                <input label="2star" class='radioInput' type='radio' name='rating' value='2'/>
-                <input label="3star" class='radioInput' type='radio' name='rating' value='3'/>
-                <input label="4star" class='radioInput' type='radio' name='rating' value='4'/>
-                <input label="5star" class='radioInput' type='radio' name='rating' value='5'/>
-            </div>
+            <input id="star1" class='radioInput' type='radio' name='rating' value='1'/>
+            <label for="star1">1 Star</label>
+
+            <input id="star2" class='radioInput' type='radio' name='rating' value='2'/>
+            <label for="star2">2 Star</label>
+
+            <input id="star3" class='radioInput' type='radio' name='rating' value='3'/>
+            <label for="star3">3 Star</label>
+
+            <input id="star4" class='radioInput' type='radio' name='rating' value='4'/>
+            <label for="star4">4 Star</label>
+
+            <input id="star5" class='radioInput' type='radio' name='rating' value='5'/>
+            <label for="star5">5 Star</label>
+            </form>
         
             <section class='descrip'>
                 <label for="description">Leave a Description</label>
@@ -124,9 +132,8 @@ function deleteBookmarkListener() {
 }
 
 function handleDetails() {
-  $("main").on("click", "#moreInfo", function (e) {
-    e.preventDefault();
-    $(".details").toggleClass("hidden");
+  $("main").on("click", ".moreInfo", function (e) {
+    $(e.target).parent().find("section").toggleClass("hidden");
   });
 }
 
