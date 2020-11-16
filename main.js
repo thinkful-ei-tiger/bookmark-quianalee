@@ -58,43 +58,33 @@ function renderHomePage() {
 function renderForm() {
   const html = `
         <h1>Bookmark App</h1>
-        <form>
+        <form id="sumbit">
             <section class="title">
                 <label for="title">Bookmark Title</label>
                 <input type='text' name='title' id='title'/>
             </section>
-
             <section class='url'>
                 <label for="url"> Enter URL Here</label>
                 <input type='text' name='url' id='url'/>
             </section>   
         
-            <form "type='radio'>
             <label for="rating">Select Your Rating</label>
-            <input id="star1" class='radioInput' type='radio' name='rating' value='1'/>
-            <label for="star1">1 Star</label>
-
-            <input id="star2" class='radioInput' type='radio' name='rating' value='2'/>
-            <label for="star2">2 Star</label>
-
-            <input id="star3" class='radioInput' type='radio' name='rating' value='3'/>
-            <label for="star3">3 Star</label>
-
-            <input id="star4" class='radioInput' type='radio' name='rating' value='4'/>
-            <label for="star4">4 Star</label>
-
-            <input id="star5" class='radioInput' type='radio' name='rating' value='5'/>
-            <label for="star5">5 Star</label>
-            </form>
-        
+              <input id="star1" class='radioInput' type='radio' name='rating' value='1'/>
+                <label for="star1">1 Star</label>
+              <input id="star2" class='radioInput' type='radio' name='rating' value='2'/>
+                <label for="star2">2 Star</label>
+              <input id="star3" class='radioInput' type='radio' name='rating' value='3'/>
+                <label for="star3">3 Star</label>
+              <input id="star4" class='radioInput' type='radio' name='rating' value='4'/>
+                <label for="star4">4 Star</label>
+              <input id="star5" class='radioInput' type='radio' name='rating' value='5'/>
+                <label for="star5">5 Star</label>
+            </label>
             <section class='descrip'>
                 <label for="description">Leave a Description</label>
                 <input type='text' name='description' id='description'/>
             </section>
-        
-            <section class='submit'>
-                <button type="submit">Submit</button>
-            </section>
+                <button type="submit">Submit</button>            
             <section class='hidden' id='formErrorMessage'>
                 <p>
                     Please fill in Title.
@@ -105,7 +95,6 @@ function renderForm() {
                 Please use http:// or https://
             </p>
             </section>
-        </div>
         </form>
     `;
   $("main").html(html);
@@ -153,7 +142,7 @@ function handleFilterButton() {
 }
 
 function submitFormListener() {
-  $("main").on("submit", "form", function (event) {
+  $("main").on("submit", function (event) {
     event.preventDefault();
     $("#urlErrorMessage").addClass("hidden");
     $("#formErrorMessage").addClass("hidden");
@@ -162,6 +151,7 @@ function submitFormListener() {
     let rating = $("[name=rating]:checked").val();
     let description = $("#description").val();
     if (urlCheck(url)) {
+      console.log(1);
       $("#urlErrorMessage").removeClass("hidden");
     } else if (title === "") {
       $("#formErrorMessage").removeClass("hidden");
